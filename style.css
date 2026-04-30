@@ -547,3 +547,153 @@ body[data-role="admin"] .btn-logout,
 body[data-role="citizen"] .btn-logout {
     display: flex !important;
 }
+
+/* ========================================== */
+/* ADVANCED MODULES STYLES                    */
+/* ========================================== */
+
+/* User Stats & Badges */
+.user-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.badge.bronze { background: #cd7f32; color: white; }
+.badge.silver { background: #c0c0c0; color: #333; }
+.badge.gold { background: #ffd700; color: #333; }
+
+.points {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Sidebar follow zone button */
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+}
+.btn-outline.active {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+.btn-outline svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toast {
+    background: var(--white);
+    color: var(--text-dark);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-left: 4px solid var(--accent-color);
+    animation: slideIn 0.3s ease-out forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 300px;
+}
+.toast svg {
+    width: 24px;
+    height: 24px;
+    color: var(--accent-color);
+}
+@keyframes slideIn {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Dashboard Tabs */
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e1e5eb;
+    padding-bottom: 10px;
+}
+.tab-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.3s;
+}
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    margin-bottom: -12px;
+}
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+}
+.tab-content.active {
+    display: block;
+}
+
+.dashboard-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.stat-card {
+    background: var(--bg-light);
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    border: 1px solid #e1e5eb;
+}
+.stat-card h3 {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+.stat-card p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.proof-img {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
