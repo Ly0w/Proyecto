@@ -32,6 +32,42 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 L.control.zoom({ position: 'bottomright' }).addTo(map);
 
 // ==========================================
+// AUTHENTICATION & RBAC
+// ==========================================
+const MOCK_USERS = {
+    "admin@antigravity.com": { password: "admin123", role: "admin", id: "u_admin1" },
+    "ciudadano@gmail.com": { password: "123", role: "citizen", id: "u_citiz1" }
+};
+
+class AuthManager {
+    static login(email, password) {
+        const user = MOCK_USERS[email];
+        if (user && user.password === password) {
+            const sessionData = { email, role: user.role, id: user.id };
+            localStorage.setItem('antigravity_session', JSON.stringify(sessionData));
+            return sessionData;
+        }
+        return null;
+    }
+    static logout() {
+        localStorage.removeItem('antigravity_session');
+        location.reload();
+    }
+    static getCurrentUser() {
+        return JSON.parse(localStorage.getItem('antigravity_session'));
+    }
+    static init() {
+        const user = this.getCurrentUser();
+        if (user) {
+            document.body.setAttribute('data-role', user.role);
+        } else {
+            document.body.setAttribute('data-role', 'guest');
+        }
+        return user;
+    }
+}
+
+// ==========================================
 // ARQUITECTURA DE DATOS (LocalStorage DB)
 // ==========================================
 const Status = {
@@ -131,7 +167,14 @@ function renderExistingMarkers() {
     drawnMarkers.forEach(m => map.removeLayer(m));
     drawnMarkers = [];
 
-    const reports = StorageManager.getReports();
+    const currentUser = AuthManager.getCurrentUser();
+    let reports = StorageManager.getReports();
+    
+    if (currentUser && currentUser.role === 'citizen') {
+        reports = reports.filter(r => r.userId === currentUser.id);
+    } else if (!currentUser) {
+        reports = []; // Bloqueado para guest
+    }
     reports.forEach(r => {
         let iconClass = 'marker-pending';
         if(r.statusId === Status.REVIEW) iconClass = 'marker-review';
@@ -172,6 +215,8 @@ function updateMarkerPosition(lat, lng) {
 }
 
 map.on('click', function(e) {
+    const user = AuthManager.getCurrentUser();
+    if (!user || user.role === 'guest') return;
     updateMarkerPosition(e.latlng.lat, e.latlng.lng);
 });
 
@@ -213,6 +258,7 @@ form.addEventListener('submit', (e) => {
     if (!latLng) return alert('Seleccione un punto en el mapa.');
     if (!isWithinGeofence(latLng.lat, latLng.lng)) return alert('Fuera de límite permitido (La Rioja).');
 
+    const currentUser = AuthManager.getCurrentUser();
     const reportData = {
         id: "rep_" + Date.now() + Math.random().toString(36).substr(2, 5),
         tipo: document.getElementById('problem-type').value,
@@ -222,7 +268,8 @@ form.addEventListener('submit', (e) => {
         lng: latLng.lng,
         fecha: new Date().toISOString(),
         statusId: Status.PENDING,
-        affectedCount: 1
+        affectedCount: 1,
+        userId: currentUser ? currentUser.id : 'unknown'
     };
 
     const dup = findDuplicate(reportData.lat, reportData.lng, reportData.tipo);
@@ -340,3 +387,39 @@ function renderAdminTable() {
         });
     });
 }
+
+// ==========================================
+// INIT APP & LOGIN LOGIC
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    AuthManager.init();
+    
+    // Auth DOM Elements
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const btnLogout = document.getElementById('btn-logout');
+    
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-password').value;
+        
+        const user = AuthManager.login(email, pass);
+        if (user) {
+            loginError.classList.add('hidden');
+            AuthManager.init();
+            renderExistingMarkers(); // Recargar mapa según permisos
+            // Reset fields
+            loginForm.reset();
+        } else {
+            loginError.classList.remove('hidden');
+        }
+    });
+    
+    btnLogout.addEventListener('click', () => {
+        AuthManager.logout();
+    });
+    
+    // Initial render
+    renderExistingMarkers();
+});

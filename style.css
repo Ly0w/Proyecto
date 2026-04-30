@@ -456,3 +456,94 @@ footer p {
     text-align: center;
     line-height: 1.4;
 }
+
+/* ========================================== */
+/* LOGIN & RBAC STYLES                        */
+/* ========================================== */
+
+/* Login Overlay */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(15px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.login-logo {
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.login-hint {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Logout Button */
+.btn-logout {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--error-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: #b90324;
+}
+
+.btn-logout svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Role Based Visibility */
+body[data-role="guest"] .sidebar,
+body[data-role="guest"] .btn-admin-toggle,
+body[data-role="guest"] .btn-logout {
+    display: none !important;
+}
+
+body[data-role="citizen"] .btn-admin-toggle {
+    display: none !important;
+}
+
+body[data-role="admin"] .login-overlay,
+body[data-role="citizen"] .login-overlay {
+    display: none !important;
+}
+
+body[data-role="admin"] .btn-logout,
+body[data-role="citizen"] .btn-logout {
+    display: flex !important;
+}
