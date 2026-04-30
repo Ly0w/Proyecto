@@ -7,6 +7,8 @@
     --text-muted: #666666;
     --white: #ffffff;
     --error-color: #d90429;
+    --warning-color: #f59e0b;
+    --success-color: #10b981;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     --glass-bg: rgba(255, 255, 255, 0.9);
 }
@@ -184,7 +186,7 @@ textarea {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* Submit Button */
@@ -211,6 +213,214 @@ textarea {
 .btn-submit:active {
     transform: translateY(0);
 }
+
+/* Admin Toggle Button */
+.btn-admin-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid #e1e5eb;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.btn-admin-toggle:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-admin-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Admin Panel */
+.admin-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 600px;
+    height: 100vh;
+    background: var(--white);
+    z-index: 2000;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.admin-panel.hidden {
+    transform: translateX(100%);
+    display: flex !important; /* Overriding .hidden display:none to allow sliding animation */
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e1e5eb;
+    padding-bottom: 15px;
+}
+
+.admin-header h2 {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-close:hover {
+    color: var(--error-color);
+}
+
+.admin-filters {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-filters select {
+    width: auto;
+    flex: 1;
+}
+
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #e1e5eb;
+}
+
+#admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+#admin-table th, #admin-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e1e5eb;
+}
+
+#admin-table th {
+    background: var(--bg-light);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+#admin-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.status-select {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* Status Colors (Select backgrounds) */
+.status-select[data-status="Pending"] { background: #fee2e2; color: #991b1b; }
+.status-select[data-status="In Review"] { background: #fef3c7; color: #92400e; }
+.status-select[data-status="In Repair"] { background: #dbeafe; color: #1e40af; }
+.status-select[data-status="Resolved"] { background: #d1fae5; color: #065f46; }
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.modal-icon svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.modal-content h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+.modal-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-actions button {
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary { background: var(--primary-color); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary { background: #e1e5eb; color: var(--text-dark); }
+.btn-secondary:hover { background: #d1d5db; }
+.btn-ghost { background: transparent; color: var(--text-muted); }
+.btn-ghost:hover { text-decoration: underline; }
+
+/* Map Markers CSS Filters */
+.marker-pending { filter: hue-rotate(150deg); } 
+.marker-review { filter: hue-rotate(200deg); } 
+.marker-repair { filter: hue-rotate(0deg); } 
+.marker-resolved { filter: hue-rotate(270deg); opacity: 0.5; }
 
 /* Spinner Animation */
 .spinner {
@@ -245,9 +455,4 @@ footer p {
     color: var(--text-muted);
     text-align: center;
     line-height: 1.4;
-}
-
-/* Custom Marker Styling (Optional) */
-.custom-marker {
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
 }

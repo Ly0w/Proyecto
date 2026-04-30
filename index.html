@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte Ciudadano de Agua - La Rioja</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Antigravity - Reporte Ciudadano</title>
     <meta name="description" content="Aplicación para el reporte de incidentes de agua en la provincia de La Rioja, Argentina.">
+    <meta name="theme-color" content="#0056b3">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +24,12 @@
 <body>
     <div id="map"></div>
 
+    <!-- Admin Toggle Button -->
+    <button id="admin-toggle" class="btn-admin-toggle" title="Modo Administrador">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+    </button>
+
+    <!-- Main Sidebar -->
     <div class="sidebar" id="sidebar">
         <header>
             <div class="logo">
@@ -38,12 +48,18 @@
                     <option value="falta-presion">Falta de presión</option>
                     <option value="rotura-cano">Rotura de caño</option>
                     <option value="agua-turbia">Agua turbia</option>
+                    <option value="desborde">Desborde cloacal</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="description">Descripción breve</label>
                 <textarea id="description" placeholder="Describa el problema detalladamente..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="photo-url">Foto (URL opcional)</label>
+                <input type="url" id="photo-url" placeholder="https://ejemplo.com/foto.jpg">
             </div>
 
             <div class="form-group">
@@ -58,21 +74,73 @@
 
             <div id="geo-validation" class="validation-msg hidden">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                <span>Solo se permiten reportes dentro de La Rioja.</span>
+                <span>Reporte fuera de los límites permitidos (La Rioja).</span>
             </div>
 
             <button type="submit" class="btn-submit">Enviar Reporte</button>
         </form>
 
         <footer>
-            <p>© 2024 Aguas de La Rioja - Sistema de Gestión de Incidentes</p>
+            <p>© 2024 Antigravity - Aguas de La Rioja</p>
         </footer>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel hidden">
+        <div class="admin-header">
+            <h2>Panel de Administración</h2>
+            <button id="close-admin" class="btn-close">&times;</button>
+        </div>
+        <div class="admin-filters">
+            <label for="filter-type">Filtrar por Tipo:</label>
+            <select id="filter-type">
+                <option value="all">Todos</option>
+                <option value="perdida">Pérdida de agua</option>
+                <option value="falta-presion">Falta de presión</option>
+                <option value="rotura-cano">Rotura de caño</option>
+                <option value="agua-turbia">Agua turbia</option>
+                <option value="desborde">Desborde cloacal</option>
+            </select>
+        </div>
+        <div class="table-container">
+            <table id="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th>Afectados</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Llenado dinámico -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Duplicate Modal -->
+    <div id="duplicate-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <h3>Reporte Similar Detectado</h3>
+            <p>Ya existe un reporte de <strong><span id="dup-type"></span></strong> a menos de 50 metros de esta ubicación.</p>
+            <div class="modal-actions">
+                <button id="btn-join-report" class="btn-primary">Unirse al reporte existente</button>
+                <button id="btn-force-report" class="btn-secondary">Crear uno nuevo de todas formas</button>
+                <button id="btn-cancel-report" class="btn-ghost">Cancelar</button>
+            </div>
+        </div>
     </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
-    <!-- Custom JS -->
+    <!-- App Logic -->
     <script src="script.js"></script>
 </body>
 </html>
